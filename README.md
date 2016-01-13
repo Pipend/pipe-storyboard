@@ -9,7 +9,7 @@ Set of components to create storyboards from pipe queries
 `npm install pipe-storyboard`
 
 ## Usage
-```
+```LiveScript
 pipe-storyboard = require \pipe-storyboard
 Layout = create-factory pipe-storyboard.Layout
 Story = create-factory pipe-storyboard.Story
@@ -54,7 +54,7 @@ Storyboard do
 > Connects ui controls & queries by mapping ui values to parameters, and propagating these parameters to its children. Story, Layout or a Storyboard component itself can be passed as child. 
 A Storyboard component also propagates the pipe api server url to its children, this can be overriden by setting the `pipe-web-client-end-point` prop on the child.
 
-```javascript
+```LiveScript
 Control :: {
     
     # name of the control, used for fetching and updating value from state
