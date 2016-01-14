@@ -14,10 +14,13 @@ module.exports = create-class do
     get-default-props: ->
         branch-id: "" 
         class-name: ""
-        parameters: [] # Map ParameterName, {value :: a, client-side :: Boolean}
+        parameters: {} # Map ParameterName, {value :: a, client-side :: Boolean}
         pipe-web-client-end-point: undefined # String
         query-id: ""
         style: {}
+        show-links: true
+        show-title: true
+        title: undefined
 
     # render :: a -> ReactElement
     render: ->
@@ -29,29 +32,36 @@ module.exports = create-class do
             class-name: "story #{@props.class-name}"
             style: @props.style
 
-            # BUTTONS
-            div do 
-                class-name: \buttons
+            div null,
 
-                a do 
-                    href: "#{pipe-web-client-end-point}/branches/#{@props.branch-id}"
-                    target: \_blank
-                    \Edit
+                # TITLE
+                # if @props.show-title
+                #     div null, @props.title
 
-                a do
-                    href: "#{share-url}#{decode-URI-component querystring.stringify parameters}"
-                    target: \_blank
-                    \Share
+                # BUTTONS
+                if @props.show-links
+                    div do 
+                        class-name: \buttons
 
-                a do 
-                    ref: \parameters
-                    \data-clipboard-text : (JSON.stringify parameters, null, 4)
-                    \Parameters
-                    
-                a do 
-                    href: "#{pipe-web-client-end-point}/ops"
-                    target: \_blank
-                    'Task Manager'
+                        a do 
+                            href: "#{pipe-web-client-end-point}/branches/#{@props.branch-id}"
+                            target: \_blank
+                            \Edit
+
+                        a do
+                            href: "#{share-url}#{decode-URI-component querystring.stringify parameters}"
+                            target: \_blank
+                            \Share
+
+                        a do 
+                            ref: \parameters
+                            \data-clipboard-text : (JSON.stringify parameters, null, 4)
+                            \Parameters
+                            
+                        a do 
+                            href: "#{pipe-web-client-end-point}/ops"
+                            target: \_blank
+                            'Task Manager'
                     
 
             # PRESENTATION

@@ -8,7 +8,7 @@ pipe-storyboard = require \../../src/index
 Layout = create-factory pipe-storyboard.Layout
 Story = create-factory pipe-storyboard.Story
 Storyboard = create-factory pipe-storyboard.Storyboard
-{update-querystring} = require \utils.ls
+{update-querystring} = require \./utils.ls
 
 App = create-class do 
 
@@ -19,6 +19,12 @@ App = create-class do
         Storyboard do 
             pipe-web-client-end-point: \http://localhost:4081
             controls: 
+                * name: \enabled
+                  label: \Enabled
+                  type: \checkbox
+                  default-value: true
+                  client-side: true
+
                 * name: \conversions
                   label: \Conversions
                   type: \number
@@ -46,7 +52,9 @@ App = create-class do
                     flex-direction: \column
                 Story do 
                     branch-id: \pztAHkd
+                    title: 'my cool query'
                     style:
+                        border-bottom: '1px solid #ccc'
                         height: 400
                 Layout do 
                     style:
@@ -54,6 +62,7 @@ App = create-class do
                     Story do 
                         branch-id: \pztAHkd
                         style:
+                            border-right: '1px solid #ccc'
                             flex: 1
                     Story do
                         branch-id: \pztAHkd

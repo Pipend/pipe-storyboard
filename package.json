@@ -46,7 +46,7 @@
     "clipboard": "^1.5.5",
     "moment": "^2.11.1",
     "pipe-web-client": "0.0.2",
-    "prelude-extension": "0.0.7",
+    "prelude-extension": "0.0.8",
     "react": "^0.14.6",
     "react-addons-css-transition-group": "^0.14.6",
     "react-dom": "^0.14.6",

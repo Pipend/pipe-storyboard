@@ -1,6 +1,19 @@
-{all, any, filter, map, pairs-to-obj} = require \prelude-ls
+{all, any, filter, id, map, pairs-to-obj} = require \prelude-ls
 {is-equal-to-object} = require \prelude-extension
 {DOM:{div, input, label}, create-class, create-factory} = require \react
+
+# parse-string :: a -> b
+# parse-string :: if a is not a string then (a -> a)
+# parse-string :: if a is a string then (String -> b)
+parse-string = (value) ->
+    parser = 
+        | (/^\d+$/g.test value) => parse-int
+        | (/^(\d|\.)+$/g.test value) => parse-float
+        | value == \true => -> true
+        | value == \false => -> false
+        | value == '' => -> undefined
+        | _ => id
+    parser value
 
 module.exports = create-class do 
 
@@ -30,7 +43,17 @@ module.exports = create-class do
 
         change = @props.input-fields 
             |> any ({name, default-value, value}) ~> 
-                !(@state[name] `is-equal-to-object` (value ? default-value))
+                new-value = @state[name]
+                old-value = value ? default-value
+
+                # the parse-string function returns the same object if its not a string
+                # the reasoning behind use of parse-string:
+                #  the old-value comes from props and this value might be parsed value
+                #  the new-value comes from the ui control's change listener 
+                #  in the case of html input controls this will most likely be a string 
+                #  even if the type of the control is 'number', which breaks the equality check
+                #  so to level the plain field we call parse-string on lhs and rhs
+                !((parse-string new-value) `is-equal-to-object` (parse-string old-value))
 
         div do 
             class-name: \form, 

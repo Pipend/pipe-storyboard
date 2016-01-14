@@ -1,11 +1,14 @@
-{filter, fold, id, map, Obj, pairs-to-obj} = require \prelude-ls
+{filter, fold, id, is-it-NaN, map, Obj, pairs-to-obj} = require \prelude-ls
 {is-equal-to-object} = require \prelude-extension
 {DOM:{div, input}, Children, clone-element, create-class, create-factory} = require \react
 Form = create-factory require \./Form
 require! \react-selectize
 SimpleSelect = create-factory react-selectize.SimpleSelect
 
-float = -> if !!it then parse-float it else it
+# float :: String -> Float?
+float = (n) -> 
+    result = parse-float n
+    if is-it-NaN result then undefined else result
 
 module.exports = create-class do
 
@@ -42,9 +45,29 @@ module.exports = create-class do
         controls = @props.controls |> map ({
             name, type, ui-value-from-state, state-from-ui-value, parameters-from-ui-value
         }:control?) ~>
+
+            # handle cases where the state value or the ui value may be a string for default html input controls
+            # f :: StateValue -> UIValue
+            f = match type
+                | \number => float
+                | \checkbox => (state-value) ->
+                    if typeof state-value == \string
+                        match state-value
+                            | \true => true
+                            | \false => false
+                            | _ => undefined
+                    else
+                        state-value
+                | _ => i
+
             {} <<< control <<<
-                ui-value-from-state: ui-value-from-state ? ~> (if type == \number then float else id) @props.state[name]
-                state-from-ui-value: state-from-ui-value ? (ui-value) ~> "#{name}" : ui-value
+
+                # ui-value-from-state :: State -> UIValue
+                ui-value-from-state: ui-value-from-state ? (state) ~>  f state[name]
+                    
+                # state-from-ui-value :: UIValue -> State
+                state-from-ui-value: state-from-ui-value ? (ui-value) ~> "#{name}" : f ui-value
+                
                 parameters-from-ui-value: parameters-from-ui-value ? (ui-value) ~> "#{name}" : ui-value
         
         # extract (parameters :: Map String, a) from controls
@@ -96,13 +119,18 @@ module.exports = create-class do
                                         callback!
 
                             | _ =>
-                                input do
-                                    placeholder: placeholder
-                                    type: type
-                                    value: value
-                                    on-change: ({current-target:{value}}) ~> 
-                                        on-change do 
-                                            (if type == \number then float else id) value
+                                input {
+                                    type
+                                    placeholder
+                                    on-change: ({current-target}) ~>
+
+                                        # f :: DOMElement -> UIValue
+                                        f = match type
+                                            | \checkbox => (.checked)
+                                            | _ => (.value)
+
+                                        on-change f current-target
+                                } <<< (if type == \checkbox then {checked: value} else {value})
                     }
 
                 # this method converts a set of ui-values to state and calls the parent component
