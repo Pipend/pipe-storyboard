@@ -13,4 +13,3 @@ before script:
   - npm install -g gulp
 script:
   - gulp build:src
-  - npm run coveralls
