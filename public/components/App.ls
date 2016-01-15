@@ -17,7 +17,7 @@ App = create-class do
     # render :: a -> ReactElement
     render: ->
         Storyboard do 
-            pipe-web-client-end-point: \http://localhost:4081
+            url: \http://localhost:4081
             controls: 
                 * name: \enabled
                   label: \Enabled
@@ -29,7 +29,6 @@ App = create-class do
                   label: \Conversions
                   type: \number
                   default-value: 0
-                  client-side: true
 
                 * name: \visitors
                   label: \Visitors
@@ -57,7 +56,6 @@ App = create-class do
                     flex-direction: \column
                 Story do 
                     branch-id: \pztAHkd
-                    title: 'my cool query'
                     style:
                         border-bottom: '1px solid #ccc'
                         height: 400

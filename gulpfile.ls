@@ -19,14 +19,14 @@ require! \watchify
 config = 
     minify: process.env.MINIFY == \true
 
-gulp.task \build:examples:styles, ->
+gulp.task \build:components:styles, ->
     gulp.src <[./public/components/App.styl]>
     .pipe gulp-stylus {use: nib!, import: <[nib]>, compress: config.minify, "include css": true}
     .pipe gulp.dest './public/components'
     .pipe gulp-connect.reload!
 
-gulp.task \watch:examples:styles, -> 
-    gulp.watch <[./public/components/*.styl]>, <[build:examples:styles]>
+gulp.task \watch:components:styles, -> 
+    gulp.watch <[./public/components/*.styl]>, <[build:components:styles]>
 
 # create-bundler :: [String] -> Bundler
 create-bundler = (entries) ->
@@ -64,24 +64,23 @@ build-and-watch = (bundler, {file}:output, done, on-update, on-build) ->
             once-done!
             gulp-util.log "#{file} built in #{time / 1000} seconds"
 
-examples-bundler = create-bundler [\./public/components/App.ls]
+components-bundler = create-bundler [\./public/components/App.ls]
 
 app-js = file: "App.js", directory: "./public/components/"
 
-gulp.task \build:examples:scripts, ->
-    bundle examples-bundler, app-js
+gulp.task \build:components:scripts, ->
+    bundle components-bundler, app-js
 
-gulp.task \build-and-watch:examples:scripts, (done) ->
-    build-and-watch examples-bundler, app-js, done
+gulp.task \build-and-watch:components:scripts, (done) ->
+    build-and-watch components-bundler, app-js, done
 
 gulp.task \build:src:styles, ->
     gulp.src <[./src/*.styl]>
     .pipe gulp-stylus {use: nib!, import: <[nib]>, compress: config.minify, "include css": true}
     .pipe gulp.dest \./src
-    .pipe gulp-connect.reload!
 
 gulp.task \watch:src:styles, -> 
-    gulp.watch <[./src/*.styl]>, <[build:src:styles]>
+    gulp.watch <[./src/*.styl]>, <[build:src:styles build:components:styles]>
 
 gulp.task \build:src:scripts, ->
     gulp.src <[./src/*.ls]>
@@ -109,13 +108,13 @@ gulp.task \coverage, ->
 
 gulp.task \build:src, <[build:src:styles build:src:scripts]>
 gulp.task \watch:src, <[watch:src:styles watch:src:scripts]>
-gulp.task \build:examples, <[build:examples:styles build:examples:scripts]>
+gulp.task \build:components, <[build:components:styles build:components:scripts]>
 gulp.task \default, -> run-sequence do 
     <[
         build:src 
         watch:src 
-        build:examples:styles 
-        watch:examples:styles 
-        build-and-watch:examples:scripts
+        build:components:styles 
+        watch:components:styles 
+        build-and-watch:components:scripts
     ]>
     \dev:server 

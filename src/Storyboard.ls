@@ -31,7 +31,7 @@ module.exports = create-class do
         }
         '''
         parameters: {}
-        pipe-web-client-end-point: undefined # String
+        url: undefined # String
         controls: [] # [Control]
         state: {} # state :: State
         
@@ -46,7 +46,8 @@ module.exports = create-class do
             name, type, ui-value-from-state, state-from-ui-value, parameters-from-ui-value
         }:control?) ~>
 
-            # handle cases where the state value or the ui value may be a string for default html input controls
+            # handle cases where the state value or the ui value may be a string especially in the case of html input controls
+            # this way the user doesn't need to pass string representation of the type in default-value prop
             # f :: StateValue -> UIValue
             f = match type
                 | \number => float
@@ -155,4 +156,4 @@ module.exports = create-class do
                         clone-element do 
                             child
                             parameters: {} <<< @props.parameters <<< parameters 
-                            pipe-web-client-end-point: child.props?.pipe-web-client-end-point ? @props.pipe-web-client-end-point
+                            url: child.props?.url ? @props.url

@@ -18,7 +18,7 @@ Storyboard = create-factory pipe-storyboard.Storyboard
 Storyboard do 
 
     # the pipe-server to get queries from
-    pipe-web-client-end-point: \http://localhost:4081
+    url: \http://localhost:4081
 
     # a list of ui controls corresponding to the parameters of the child queries
     controls: 
@@ -47,12 +47,15 @@ Storyboard do
         Story branch-id: \pqucBWe
 ```
 
+## Usage (css / stylus)
+`@require 'node_modules/pipe-storyboard/src/index.css'`
+
 ## Components
 
 * Storyboard
 
 > Connects ui controls & queries by mapping ui values to parameters, and propagating these parameters to its children. Story, Layout or a Storyboard component itself can be passed as child. 
-A Storyboard component also propagates the pipe api server url to its children, this can be overriden by setting the `pipe-web-client-end-point` prop on the child.
+A Storyboard component also propagates the pipe api server url to its children, this can be overriden by setting the `url` prop on the child.
 
 ```LiveScript
 Control :: {
@@ -106,7 +109,7 @@ Control :: {
 |    controls                  | [Control]                      |  |
 |    state                     | State                          | an object that stores the state of the ui controls, this can be the state of the hosting component or the query string (for example) |
 |    on-change                 | State -> Void                  | fired whenever the value of a ui-control changes, here you MUST update the state prop, above, to complete the data flow |
-|    pipe-web-client-end-point | String                         | the url of the pipe api server, propagated to the children |
+|    url | String                         | the url of the pipe api server, propagated to the children |
 |    parameters                | object                         | default parameters object which extended by the parameters object obtained from ui controls (before being propagated to the children), also used for nesting Storyboard components |
 
 * Story 
@@ -115,12 +118,15 @@ Control :: {
 
 |    Property                  |   Type                         |   Description                  |
 |------------------------------|--------------------------------|--------------------------------|
-|    branch-id                 | String                         | the branch id of the pipe query, if specified the latest query for that branch will be rendered
+|    branch-id                 | String                         | the branch id of the pipe query, if specified the latest query for that branch will be rendered |
 |    query-id                  | String                         | the query id of the pipe query to be rendered |
-|    pipe-web-client-end-point | String                         | the url of the pipe api server, usually propagated by the Storyboard component |
+|    url | String                         | the url of the pipe api server, usually propagated by the Storyboard component |
 |    class-name                | String                         | custom class name for styling the component externally |
 |    style                     | object                         | custom css styles useful in combination with Layout and flexbox |
 |    parameters                | object                         | parameters to pass to the pipe query (identified by query-id or branch-id), usually propagated by the Storyboard component |
+|    title                     | String                         | title for the query, defaults to the query-title property of the pipe document |
+|    show-title                | Boolean                        | defaults to true |
+|    show-links                | Boolean                        | defaults to true (setting it to false will hide the links to edit, share, .. query/result) |
 
 * Layout
 
@@ -129,4 +135,4 @@ Control :: {
 |    class-name                | String                         | custom class name for styling the component externally |
 |    style                     | object                         | custom css styles |
 |    parameters                | object                         | parameters to pass to children, usually propagated by the Storyboard component |
-|    pipe-web-client-end-point | String                         | the url of the pipe api server, usually propagated by the Storyboard component |
+|    url | String                         | the url of the pipe api server, usually propagated by the Storyboard component |

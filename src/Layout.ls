@@ -8,7 +8,7 @@ module.exports = create-class do
     get-default-props: ->
         class-name: ""
         parameters: {}
-        pipe-web-client-end-point: undefined # String
+        url: undefined # String
         style: {}
 
     # render :: a -> ReactElement
@@ -22,4 +22,4 @@ module.exports = create-class do
                     clone-element do 
                         child
                         parameters: @props.parameters
-                        pipe-web-client-end-point: child.props?.pipe-web-client-end-point ? @props.pipe-web-client-end-point
+                        url: child.props?.url ? @props.url

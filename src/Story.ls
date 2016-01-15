@@ -15,7 +15,7 @@ module.exports = create-class do
         branch-id: "" 
         class-name: ""
         parameters: {} # Map ParameterName, {value :: a, client-side :: Boolean}
-        pipe-web-client-end-point: undefined # String
+        url: undefined # String
         query-id: ""
         style: {}
         show-links: true
@@ -24,19 +24,22 @@ module.exports = create-class do
 
     # render :: a -> ReactElement
     render: ->
-        {pipe-web-client-end-point} = @props
+        {url} = @props
         parameters = @props.parameters |> Obj.map (.value)
-        share-url = "#{pipe-web-client-end-point}/apis/branches/#{@props.branch-id}/execute/true/presentation?"
+        share-url = "#{url}/apis/branches/#{@props.branch-id}/execute/true/presentation?"
 
         div do 
-            class-name: "story #{@props.class-name}"
+            class-name: "story #{@props.class-name} #{if @state.loading then 'loading' else ''}"
             style: @props.style
 
-            div null,
+            div do 
+                class-name: \header
 
                 # TITLE
-                # if @props.show-title
-                #     div null, @props.title
+                if @props.show-title
+                    div do 
+                        class-name: \title
+                        @props.title ? @state.document.query-title
 
                 # BUTTONS
                 if @props.show-links
@@ -44,7 +47,7 @@ module.exports = create-class do
                         class-name: \buttons
 
                         a do 
-                            href: "#{pipe-web-client-end-point}/branches/#{@props.branch-id}"
+                            href: "#{url}/branches/#{@props.branch-id}"
                             target: \_blank
                             \Edit
 
@@ -59,7 +62,7 @@ module.exports = create-class do
                             \Parameters
                             
                         a do 
-                            href: "#{pipe-web-client-end-point}/ops"
+                            href: "#{url}/ops"
                             target: \_blank
                             'Task Manager'
                     
@@ -71,29 +74,30 @@ module.exports = create-class do
 
     # get-initial-state :: a -> UIState
     get-initial-state: ->
-        {}
+        loading: false
+        document : {} # {query-title :: String, ...}
         # execute :: Parameters -> Boolean -> p result
         # presentation-function :: Parameters -> DOMElement -> result
         # result :: object
 
     # component-will-mount :: () -> Void        
     component-will-mount: !->
-        {compile-latest-query} = pipe-web-client end-point: @props.pipe-web-client-end-point
+        {compile-latest-query} = pipe-web-client end-point: @props.url
 
         # load & compile the query from pipe
-        {execute, transformation-function, presentation-function} <~ compile-latest-query @props.branch-id .then _
+        {document, execute, transformation-function, presentation-function} <~ compile-latest-query @props.branch-id .then _
 
         # update the state with:
         #  execute :: Parameters -> p result
         #  tranformation-function :: result -> Parameters -> result
         #  presentation-function :: DOMElement -> result -> Parameters -> DOM()
-        <~ @set-state {execute: (execute true), transformation-function, presentation-function}
+        <~ @set-state {document, execute: (execute false), transformation-function, presentation-function, loading: true}
 
         parameters = @props.parameters |> Obj.map (.value)
 
         # use parameters to execute the query and update the state with the result
         result <~ @state.execute parameters .then _
-        <~ @set-state {result}
+        <~ @set-state {result, loading: false}
         
         # present the result
         presentation-function do 
@@ -129,8 +133,9 @@ module.exports = create-class do
                         parameters
 
                 else
+                    <~ @set-state loading: true
                     result <~ execute parameters .then _
-                    <~ @set-state {result}
+                    <~ @set-state {result, loading: false}
                     presentation-function do 
                         view
                         transformation-function result, parameters
