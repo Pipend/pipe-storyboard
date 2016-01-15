@@ -24,48 +24,49 @@ module.exports = create-class do
 
     # render :: a -> ReactElement
     render: ->
-        {url} = @props
+        {url, show-title, show-links} = @props
         parameters = @props.parameters |> Obj.map (.value)
         share-url = "#{url}/apis/branches/#{@props.branch-id}/execute/true/presentation?"
+        expand = !show-title and !show-links
 
         div do 
-            class-name: "story #{@props.class-name} #{if @state.loading then 'loading' else ''}"
+            class-name: "story #{@props.class-name} #{if @state.loading then 'loading' else ''} #{if expand then 'expand' else ''}"
             style: @props.style
 
-            div do 
-                class-name: \header
+            if !expand
+                div do 
+                    class-name: \header
 
-                # TITLE
-                if @props.show-title
-                    div do 
-                        class-name: \title
-                        @props.title ? @state.document.query-title
+                    # TITLE
+                    if @props.show-title
+                        div do 
+                            class-name: \title
+                            @props.title ? @state.document.query-title
 
-                # BUTTONS
-                if @props.show-links
-                    div do 
-                        class-name: \buttons
+                    # BUTTONS
+                    if @props.show-links
+                        div do 
+                            class-name: \buttons
 
-                        a do 
-                            href: "#{url}/branches/#{@props.branch-id}"
-                            target: \_blank
-                            \Edit
+                            a do 
+                                href: "#{url}/branches/#{@props.branch-id}"
+                                target: \_blank
+                                \Edit
 
-                        a do
-                            href: "#{share-url}#{decode-URI-component querystring.stringify parameters}"
-                            target: \_blank
-                            \Share
+                            a do
+                                href: "#{share-url}#{decode-URI-component querystring.stringify parameters}"
+                                target: \_blank
+                                \Share
 
-                        a do 
-                            ref: \parameters
-                            \data-clipboard-text : (JSON.stringify parameters, null, 4)
-                            \Parameters
-                            
-                        a do 
-                            href: "#{url}/ops"
-                            target: \_blank
-                            'Task Manager'
-                    
+                            a do 
+                                ref: \parameters
+                                \data-clipboard-text : (JSON.stringify parameters, null, 4)
+                                \Parameters
+                                
+                            a do 
+                                href: "#{url}/ops"
+                                target: \_blank
+                                'Task Manager'
 
             # PRESENTATION
             div do 
@@ -107,7 +108,8 @@ module.exports = create-class do
 
     # component-did-mount :: () -> Void
     component-did-mount: !->
-        new clipboard find-DOM-node @refs.parameters
+        if !!@refs.parameters
+            new clipboard find-DOM-node @refs.parameters
 
     # component-will-receive-props :: Props -> Void
     component-will-receive-props: (next-props) !->

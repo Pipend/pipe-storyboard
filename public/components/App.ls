@@ -52,8 +52,8 @@ App = create-class do
                 react-router.hash-history.replace-state null, (update-querystring window.location.href, new-state)
             Layout do 
                 style:
-                    width: \100%
                     flex-direction: \column
+                    width: \100%
                 Story do 
                     branch-id: \pztAHkd
                     style:
@@ -61,9 +61,12 @@ App = create-class do
                         height: 400
                 Layout do 
                     style:
+                        border-bottom: '1px solid #ccc'
                         width: \100%
                     Story do 
                         branch-id: \pztAHkd
+                        show-title: false
+                        show-links: false
                         style:
                             border-right: '1px solid #ccc'
                             flex: 1
