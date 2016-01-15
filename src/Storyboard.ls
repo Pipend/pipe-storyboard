@@ -58,7 +58,7 @@ module.exports = create-class do
                             | _ => undefined
                     else
                         state-value
-                | _ => i
+                | _ => id
 
             {} <<< control <<<
 

@@ -42,6 +42,11 @@ App = create-class do
                   type: \number
                   default-value: 0.01
                   client-side: true
+
+                * name: \test
+                  label: 'test'
+                  type: \text
+                  client-side: true
                 ...
             state: @props.location.query
             on-change: (new-state) ~> 
