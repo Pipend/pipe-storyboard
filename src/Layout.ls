@@ -6,10 +6,11 @@ module.exports = create-class do
 
     # get-default-props :: a -> Props
     get-default-props: ->
+        cache: undefined # Boolean
         class-name: ""
         parameters: {}
-        url: undefined # String
         style: {}
+        url: undefined # String
 
     # render :: a -> ReactElement
     render: ->
@@ -21,5 +22,6 @@ module.exports = create-class do
                 (child) ~> 
                     clone-element do 
                         child
+                        cache: child.props?.cache ? @props.cache
                         parameters: @props.parameters
                         url: child.props?.url ? @props.url

@@ -13,14 +13,15 @@ module.exports = create-class do
     # get-default-props :: a -> Props
     get-default-props: ->
         branch-id: "" 
+        cache: undefined # Boolean
         class-name: ""
         parameters: {} # Map ParameterName, {value :: a, client-side :: Boolean}
-        url: undefined # String
         query-id: ""
-        style: {}
         show-links: true
         show-title: true
+        style: {}
         title: undefined
+        url: undefined # String
 
     # render :: a -> ReactElement
     render: ->
@@ -92,12 +93,12 @@ module.exports = create-class do
         #  execute :: Parameters -> p result
         #  tranformation-function :: result -> Parameters -> result
         #  presentation-function :: DOMElement -> result -> Parameters -> DOM()
-        <~ @set-state {document, execute: (execute false), transformation-function, presentation-function, loading: true}
+        <~ @set-state {document, execute, transformation-function, presentation-function, loading: true}
 
         parameters = @props.parameters |> Obj.map (.value)
 
         # use parameters to execute the query and update the state with the result
-        result <~ @state.execute parameters .then _
+        result <~ @state.execute @props.cache, parameters .then _
         <~ @set-state {result, loading: false}
         
         # present the result
@@ -136,7 +137,7 @@ module.exports = create-class do
 
                 else
                     <~ @set-state loading: true
-                    result <~ execute parameters .then _
+                    result <~ execute @props.cache, parameters .then _
                     <~ @set-state {result, loading: false}
                     presentation-function do 
                         view

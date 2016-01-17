@@ -16,6 +16,7 @@ module.exports = create-class do
 
     # get-default-props :: a -> Props
     get-default-props: ->
+        cache: true
         '''
         Control :: {
             name :: String, 
@@ -30,10 +31,10 @@ module.exports = create-class do
             render? :: UIValue -> (UIValue -> Void) -> ReactElement
         }
         '''
-        parameters: {}
-        url: undefined # String
         controls: [] # [Control]
+        parameters: {}
         state: {} # state :: State
+        url: undefined # String
         
         # on-change :: State -> Void
         on-change: (state) !-> 
@@ -155,5 +156,6 @@ module.exports = create-class do
                         # STORY | LAYOUT | STORYBOARD
                         clone-element do 
                             child
-                            parameters: {} <<< @props.parameters <<< parameters 
+                            cache: child.props?.cache ? @props.cache
+                            parameters: {} <<< @props.parameters <<< parameters
                             url: child.props?.url ? @props.url

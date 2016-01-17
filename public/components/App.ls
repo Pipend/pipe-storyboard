@@ -17,6 +17,7 @@ App = create-class do
     # render :: a -> ReactElement
     render: ->
         Storyboard do 
+            cache: false
             url: \http://localhost:4081
             controls: 
                 * name: \enabled

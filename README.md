@@ -106,10 +106,11 @@ Control :: {
 
 |    Property                  |   Type                         |   Description                  |
 |------------------------------|--------------------------------|--------------------------------|
+|    cache                     | Boolean | Number               | pipe query cache parameter, propagated to children |
 |    controls                  | [Control]                      |  |
 |    state                     | State                          | an object that stores the state of the ui controls, this can be the state of the hosting component or the query string (for example) |
 |    on-change                 | State -> Void                  | fired whenever the value of a ui-control changes, here you MUST update the state prop, above, to complete the data flow |
-|    url | String                         | the url of the pipe api server, propagated to the children |
+|    url                       | String                         | the url of the pipe api server, propagated to the children |
 |    parameters                | object                         | default parameters object which extended by the parameters object obtained from ui controls (before being propagated to the children), also used for nesting Storyboard components |
 
 * Story 
@@ -118,9 +119,10 @@ Control :: {
 
 |    Property                  |   Type                         |   Description                  |
 |------------------------------|--------------------------------|--------------------------------|
+|    cache                     | Boolean | Number               | pipe query cache parameter |
 |    branch-id                 | String                         | the branch id of the pipe query, if specified the latest query for that branch will be rendered |
 |    query-id                  | String                         | the query id of the pipe query to be rendered |
-|    url | String                         | the url of the pipe api server, usually propagated by the Storyboard component |
+|    url                       | String                         | the url of the pipe api server, usually propagated by the Storyboard component |
 |    class-name                | String                         | custom class name for styling the component externally |
 |    style                     | object                         | custom css styles useful in combination with Layout and flexbox |
 |    parameters                | object                         | parameters to pass to the pipe query (identified by query-id or branch-id), usually propagated by the Storyboard component |
@@ -132,7 +134,8 @@ Control :: {
 
 |    Property                  |   Type                         |   Description                  |
 |------------------------------|--------------------------------|--------------------------------|
+|    cache                     | Boolean | Number               | pipe query cache parameter, propagated to children |
 |    class-name                | String                         | custom class name for styling the component externally |
 |    style                     | object                         | custom css styles |
 |    parameters                | object                         | parameters to pass to children, usually propagated by the Storyboard component |
-|    url | String                         | the url of the pipe api server, usually propagated by the Storyboard component |
+|    url                       | String                         | the url of the pipe api server, usually propagated by the Storyboard component |
