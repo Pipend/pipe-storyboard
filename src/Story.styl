@@ -1,3 +1,5 @@
+@require "../node_modules/pipe-web-client/index.css"
+
 .story
     position relative
 
@@ -28,12 +30,12 @@
                 text-decoration underline
                 white-space nowrap
 
-    .presentation
+    .presentation-container
         position relative
         width 100%
         height calc(100% - 44px)
 
-    &.loading .presentation:after
+    &.loading .presentation-container:after
         background-color rgba(0,0,0,0.4)
         color white
         content "Loading ..."
@@ -49,5 +51,5 @@
         z-index 1
 
     &.expand
-        .presentation
+        .presentation-container
             height 100%

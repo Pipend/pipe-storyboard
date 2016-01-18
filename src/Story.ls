@@ -71,8 +71,8 @@ module.exports = create-class do
 
             # PRESENTATION
             div do 
-                class-name: \presentation
-                ref: \presentation
+                class-name: \presentation-container
+                ref: \presentation-container
 
     # get-initial-state :: a -> UIState
     get-initial-state: ->
@@ -103,7 +103,7 @@ module.exports = create-class do
         
         # present the result
         presentation-function do 
-            find-DOM-node @refs.presentation
+            find-DOM-node @refs[\presentation-container]
             transformation-function result, parameters
             parameters
 
@@ -127,7 +127,7 @@ module.exports = create-class do
             if change.length > 0
                 client-side = change |> all -> !!it.1?.client-side
                 parameters = next-props.parameters |> Obj.map (.value)
-                view = find-DOM-node @refs.presentation
+                view = find-DOM-node @refs[\presentation-container]
 
                 if client-side
                     presentation-function do 
