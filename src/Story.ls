@@ -25,13 +25,14 @@ module.exports = create-class do
 
     # render :: a -> ReactElement
     render: ->
-        {url, show-title, show-links} = @props
-        parameters = @props.parameters |> Obj.map (.value)
-        share-url = "#{url}/apis/branches/#{@props.branch-id}/execute/true/presentation?"
+        {branch-id, class-name, query-id, show-links, show-title, url}? = @props
         expand = !show-title and !show-links
+        parameters = @props.parameters |> Obj.map (.value)
+        segment = if query-id then "queries/#{query-id}" else "branches/#{branch-id}"
+        share-url = "#{url}/apis/#{segment}/execute/true/presentation?"
 
         div do 
-            class-name: "story #{@props.class-name} #{if @state.loading then 'loading' else ''} #{if expand then 'expand' else ''}"
+            class-name: "story #{class-name} #{if @state.loading then 'loading' else ''} #{if expand then 'expand' else ''}"
             style: @props.style
 
             if !expand
@@ -50,7 +51,7 @@ module.exports = create-class do
                             class-name: \buttons
 
                             a do 
-                                href: "#{url}/branches/#{@props.branch-id}"
+                                href: "#{url}/#{segment}"
                                 target: \_blank
                                 \Edit
 
@@ -84,10 +85,14 @@ module.exports = create-class do
 
     # component-will-mount :: () -> Void        
     component-will-mount: !->
-        {compile-latest-query} = pipe-web-client end-point: @props.url
+        {compile-query, compile-latest-query} = pipe-web-client end-point: @props.url
 
         # load & compile the query from pipe
-        {document, execute, transformation-function, presentation-function} <~ compile-latest-query @props.branch-id .then _
+        {document, execute, transformation-function, presentation-function} <~ (do ~>
+            if !!@props.query-id 
+                compile-query @props.query-id 
+            else 
+                compile-latest-query @props.branch-id) .then _
 
         # update the state with:
         #  execute :: Parameters -> p result
