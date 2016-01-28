@@ -51,8 +51,9 @@ App = create-class do
 
         * name: \channel
           label: \channel
-          type: \text
-          default-value: ""
+          type: \select
+          placeholder: 'Select a channel'
+          options: @state.channels
 
         * name: \limit
           label: \limit
@@ -67,7 +68,16 @@ App = create-class do
       state: @props.location.query
       on-change: (new-state) ~> 
         hash-history.replace (update-querystring window.location.href, new-state)
-      Story query-id: \pAXNE4w
+      Story branch-id: \pAXM8wu
+
+  get-initial-state: ->
+    channels: []
+
+  # component-will-mount :: () -> ()
+  component-will-mount: !->
+    fetch "http://ndemo.pipend.com/apis/branches/pB4lPee/execute/86400/transformation"
+      .then (.json!)
+      .then ~> @set-state channels: it
 
 render do 
   Router do 

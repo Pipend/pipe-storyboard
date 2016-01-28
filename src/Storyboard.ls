@@ -114,7 +114,7 @@ module.exports = create-class do
 
         # update controls with defaults for the (ui-value-from-state, state-from-ui-value & parameters-from-ui-value) functions
         controls = @props.controls |> map (control) ~>
-            {name, placeholder, tether, type, ui-value-from-state, state-from-ui-value, parameters-from-ui-value}? = control
+            {name, type, placeholder, options, tether}? = control
 
             # handle cases where the state value or the ui value may be a string especially in the case of html input controls
             # this way the user doesn't need to pass string representation of the type in default-value prop
@@ -152,7 +152,8 @@ module.exports = create-class do
                         on-value-change: ({value}, callback) ~> 
                             on-change value
                             callback!
-
+                        on-blur: ->
+                            
                 | _ =>
                     input {
                         key: name
@@ -168,6 +169,8 @@ module.exports = create-class do
                             on-change f current-target
 
                     } <<< (if type == \checkbox then {checked: value} else {value})
+
+            {ui-value-from-state, state-from-ui-value, parameters-from-ui-value}? = control
 
             {} <<< control <<<
 
