@@ -1,5 +1,5 @@
 require! \moment
-{Obj} = require \prelude-ls
+{filter, Obj, obj-to-pairs, pairs-to-obj} = require \prelude-ls
 require! \querystring
 URL = require \url
 
@@ -12,7 +12,11 @@ to-gmt = (local-datetime) ->
 update-querystring = (url, patch) -->
     {query, pathname} = URL.parse url
     new-querystring = querystring.stringify do 
-        ({} <<< (querystring.parse query) <<< patch)
+        {} <<< (querystring.parse query) <<< (patch
+            |> obj-to-pairs
+            |> filter -> (typeof it.1) != \undefined
+            |> pairs-to-obj
+        )
     "#{pathname}?#{decodeURIComponent new-querystring}"
 
 module.exports = {to-gmt, update-querystring}

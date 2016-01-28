@@ -73,7 +73,7 @@ Control :: {
     placeholder :: String
 
     # optional parameter works in conjunction with the type value 'select'
-    options: [{label :: String, value :: a}]
+    options: [String]
 
     # the default ui value
     default-value :: a

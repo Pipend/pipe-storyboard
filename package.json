@@ -1,6 +1,6 @@
 {
   "name": "pipe-storyboard",
-  "version": "0.0.9",
+  "version": "0.1.0",
   "description": "Set of components to create storyboards from pipe queries",
   "main": "src/index.js",
   "scripts": {
@@ -37,6 +37,11 @@
     "liveify": "^2.0.0",
     "livescript": "^1.4.0",
     "nib": "^1.1.0",
+    "react": "^0.14.6",
+    "react-addons-css-transition-group": "^0.14.6",
+    "react-addons-shallow-compare": "^0.14.6",
+    "react-dom": "^0.14.6",
+    "react-router": "^2.0.0-rc4",
     "run-sequence": "^1.1.5",
     "underscore": "^1.8.3",
     "vinyl-source-stream": "^1.1.0",
@@ -44,13 +49,17 @@
   },
   "dependencies": {
     "clipboard": "^1.5.5",
+    "keyboardjs": "^2.2.0",
     "moment": "^2.11.1",
-    "pipe-web-client": "0.0.8",
-    "prelude-extension": "0.0.8",
+    "pipe-web-client": "^0.0.8",
+    "prelude-extension": "^0.0.8",
+    "react-selectize": "^0.5.2"
+  },
+  "peerDependencies": {
     "react": "^0.14.6",
     "react-addons-css-transition-group": "^0.14.6",
+    "react-addons-shallow-compare": "^0.14.6",
     "react-dom": "^0.14.6",
-    "react-router": "^2.0.0-rc4",
-    "react-selectize": "^0.3.7"
+    "react-router": "^2.0.0-rc4"
   }
 }

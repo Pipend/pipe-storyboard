@@ -117,7 +117,7 @@ module.exports = create-class do
         if !!@refs.parameters
             new clipboard find-DOM-node @refs.parameters
 
-    # component-will-receive-props :: Props -> Void
+    
     component-will-receive-props: (next-props) !->
         
         {execute, transformation-function, presentation-function}? = @state
@@ -135,15 +135,25 @@ module.exports = create-class do
                 view = find-DOM-node @refs[\presentation-container]
 
                 if client-side
+
+                    # if its a client side change only, then simply transform & present the result
+                    # no need to execute the query on the server
                     presentation-function do 
                         view
                         transformation-function @state.result, parameters
                         parameters
 
                 else
+                    # show preloader
                     <~ @set-state loading: true
+
+                    # execute the query on the server
                     result <~ execute @props.cache, parameters .then _
+
+                    # hide the preloader
                     <~ @set-state {result, loading: false}
+
+                    # transform and present the result
                     presentation-function do 
                         view
                         transformation-function result, parameters

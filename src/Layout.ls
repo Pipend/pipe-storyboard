@@ -17,11 +17,17 @@ module.exports = create-class do
         div do
             class-name: "layout #{@props.class-name}"
             style: {} <<< @props.style <<< {display: \flex}
+
+            # CHILDREN
             Children.map do 
                 @props.children
                 (child) ~> 
+
+                    # STORY | LAYOUT
                     clone-element do 
                         child
                         cache: child.props?.cache ? @props.cache
                         parameters: @props.parameters
                         url: child.props?.url ? @props.url
+
+    
