@@ -2,7 +2,6 @@ require! \keyboardjs
 {filter, find, fold, id, is-it-NaN, map, Obj, obj-to-pairs, pairs-to-obj} = require \prelude-ls
 {is-equal-to-object} = require \prelude-extension
 {DOM:{div, input, label}, Children, clone-element, create-class, create-factory} = require \react
-Form = create-factory require \./Form
 require! \react-selectize
 SimpleSelect = create-factory react-selectize.SimpleSelect
 
