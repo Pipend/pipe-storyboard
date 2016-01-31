@@ -20,7 +20,6 @@ module.exports = create-class do
 
     # get-default-props :: a -> Props
     get-default-props: ->
-        cache: true
         '''
         Control :: {
             name :: String, 
@@ -36,6 +35,7 @@ module.exports = create-class do
             render? :: UIValue -> (UIValue -> Void) -> ReactElement
         }
         '''
+        cache: 3600
         controls: [] # [Control]
         parameters: {}
         state: {} # state :: State
