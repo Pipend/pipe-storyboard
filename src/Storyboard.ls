@@ -1,9 +1,11 @@
 require! \keyboardjs
-{filter, find, fold, id, is-it-NaN, map, Obj, obj-to-pairs, pairs-to-obj} = require \prelude-ls
-{is-equal-to-object} = require \prelude-extension
-{DOM:{div, input, label}, Children, clone-element, create-class, create-factory} = require \react
+{filter, find, fold, id, is-it-NaN, map, keys, Obj, obj-to-pairs, pairs-to-obj, Str} = require \prelude-ls
+{is-empty-object, is-equal-to-object} = require \prelude-extension
+{DOM:{div, input}, Children, clone-element, create-class, create-factory} = require \react
 require! \react-selectize
 SimpleSelect = create-factory react-selectize.SimpleSelect
+MultiSelect = create-factory react-selectize.MultiSelect
+LabelledComponent = create-factory require \./LabelledComponent.ls
 
 # on-hotkeys :: [String] -> (Event -> ()) -> Unbind :: () -> ()
 on-hotkeys = (hotkeys, listener) ->
@@ -56,23 +58,20 @@ module.exports = create-class do
                 class-name: \form, 
 
                 controls |> map (control) ~>
-                    {name, default-value, placeholder, render, ui-value-from-state, state-from-ui-value}? = control
+                    {name, label, default-value, placeholder, render, ui-value-from-state, state-from-ui-value}? = control
                     
-                    value = ui-value-from-state @props.state
-
-                    # ROW
-                    div do 
+                    # LABELLED COMPONENT
+                    LabelledComponent do 
                         key: name
+                        label: label
+                        show-label: !!label
+                        render: ~>
 
-                        # LABEL
-                        if !!control?.label
-                            label null, control.label
-
-                        # INPUT FIELD
-                        render do 
-                            value ? default-value
-                            (new-ui-value) ~>
-                                @props.on-change {} <<< @props.state <<< (state-from-ui-value new-ui-value)
+                            # CUSTOM INPUT CONTROL
+                            render do 
+                                (ui-value-from-state @props.state) ? default-value
+                                (new-ui-value) ~>
+                                    @props.on-change {} <<< @props.state <<< (state-from-ui-value new-ui-value)
 
                 # BUTTONS
                 div do
@@ -175,13 +174,17 @@ module.exports = create-class do
             {} <<< control <<<
 
                 # ui-value-from-state :: State -> UIValue
-                ui-value-from-state: ui-value-from-state ? (state) ~> parser state[name]
+                ui-value-from-state: (state) ~> 
+                    result = (ui-value-from-state ? (state) ~> state[name]) state
+                    return switch
+                        | typeof result == \object => (if is-empty-object result then undefined else result)
+                        | _ => result
                     
                 # state-from-ui-value :: UIValue -> State
-                state-from-ui-value: state-from-ui-value ? (ui-value) ~> "#{name}" : parser ui-value
+                state-from-ui-value: state-from-ui-value ? (ui-value) ~> "#{name}" : ui-value
                 
                 # parameters-from-ui-value :: UIValue -> Parameters
-                parameters-from-ui-value: parameters-from-ui-value ? (ui-value) ~> "#{name}" : ui-value
+                parameters-from-ui-value: parameters-from-ui-value ? (ui-value) ~> "#{name}" : parser ui-value
 
                 # render :: UIValue -> (UIValue -> Void) -> ReactElement
                 render: render

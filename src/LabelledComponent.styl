@@ -1,0 +1,29 @@
+.labelled-component
+    display flex
+    align-items center
+
+    > input[type=text], > input[type=datetime-local], > input[type=number]
+        background white
+        border: 1px solid #ccc
+        border-radius: 4px
+        outline none
+        width: 200px
+
+    > input[type=text], > input[type=number]
+        padding: 10px
+
+    > input[type=datetime-local] 
+        padding: 8px
+
+    > label
+        display inline-block
+        font-size 12px
+        margin-right 5px
+        text-align right
+        text-shadow 0px 1px 0px white
+        text-transform capitalize
+        vertical-align middle
+        width: 95px
+
+        &:after
+            content: " : "
