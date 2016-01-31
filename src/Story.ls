@@ -29,7 +29,7 @@ module.exports = create-class do
         expand = !show-title and !show-links
         parameters = @props.parameters |> Obj.map (.value)
         segment = if query-id then "queries/#{query-id}" else "branches/#{branch-id}"
-        share-url = "#{url}/apis/#{segment}/execute/true/presentation?"
+        share-url = "#{url}/apis/#{segment}/execute/#{@props.cache}/presentation?"
 
         div do 
             class-name: "story #{class-name} #{if @state.loading then 'loading' else ''} #{if expand then 'expand' else ''}"
