@@ -5,7 +5,7 @@ require! \keyboardjs
 require! \react-selectize
 SimpleSelect = create-factory react-selectize.SimpleSelect
 MultiSelect = create-factory react-selectize.MultiSelect
-LabelledComponent = create-factory require \./LabelledComponent.ls
+LabelledComponent = create-factory require \./LabelledComponent
 
 # on-hotkeys :: [String] -> (Event -> ()) -> Unbind :: () -> ()
 on-hotkeys = (hotkeys, listener) ->
