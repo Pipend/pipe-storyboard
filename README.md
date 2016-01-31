@@ -15,6 +15,9 @@ Layout = create-factory pipe-storyboard.Layout
 Story = create-factory pipe-storyboard.Story
 Storyboard = create-factory pipe-storyboard.Storyboard
 
+# used for creating custom componenets
+LabelledComponent = create-factory pipe-storyboard.LabelledComponent
+
 Storyboard do 
 
     # the pipe-server to get queries from
@@ -73,7 +76,9 @@ Control :: {
     placeholder :: String
 
     # optional parameter works in conjunction with the type value 'select'
-    options: [String]
+    options :: [String]
+    multi :: Boolean
+    tether :: Boolean
 
     # the default ui value
     default-value :: a

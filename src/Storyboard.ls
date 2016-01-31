@@ -29,6 +29,7 @@ module.exports = create-class do
             label :: String,
             placeholder :: String, 
             options: [String], 
+            multi: Boolean,
             tether :: Boolean,
             default-value :: a, 
             ui-value-from-state :: State -> UIValue, 
@@ -113,7 +114,7 @@ module.exports = create-class do
 
         # update controls with defaults for the (ui-value-from-state, state-from-ui-value & parameters-from-ui-value) functions
         controls = @props.controls |> map (control) ~>
-            {name, type, placeholder, options, tether}? = control
+            {name, type, placeholder, options, tether, multi}? = control
 
             # handle cases where the state value or the ui value may be a string especially in the case of html input controls
             # this way the user doesn't need to pass string representation of the type in default-value prop
@@ -138,7 +139,7 @@ module.exports = create-class do
             render = control.render ? (value, on-change) ->
                 switch type
                 | \select =>
-                    SimpleSelect do 
+                    (if multi then MultiSelect else SimpleSelect) do 
                         key: name
                         tether: tether
                         placeholder: placeholder
@@ -147,12 +148,21 @@ module.exports = create-class do
                             | _ => 
                                 label: value
                                 value: value
+                        values:
+                            | typeof value == \undefined => undefined
+                            | _ => 
+                                value
+                                |> Str.split \,
+                                |> filter -> !!it
+                                |> map -> label: it, value: it
                         options: options |> map ~> label: it, value: it
-                        on-value-change: ({value}, callback) ~> 
-                            on-change value
-                            callback!
-                        on-blur: ->
-                            
+                        on-value-change: ({value}) ~> on-change value
+                        on-values-change: (values) ~> 
+                            on-change do 
+                                values 
+                                |> map (.value) 
+                                |> Str.join \,
+
                 | _ =>
                     input {
                         key: name
