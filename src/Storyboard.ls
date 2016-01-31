@@ -212,7 +212,7 @@ module.exports = create-class do
     # component-will-mount :: () -> ()
     component-will-mount: !-> 
         @execute!
-        @unbind-execute-hotkeys = on-hotkeys ['command + enter', 'control + enter'], ~> @execute!
+        @unbind-execute-hotkeys = on-hotkeys ['command + enter', 'ctrl + enter'], ~> @execute!
         @unbind-reset-hotkeys = on-hotkeys ['alt + r', 'option + r'], ~> @reset!
 
     component-will-unmount: !->
