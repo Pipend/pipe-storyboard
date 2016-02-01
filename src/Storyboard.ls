@@ -47,8 +47,8 @@ module.exports = create-class do
         # on-change :: State -> ()
         on-change: (state) !-> 
 
-        # on-execute :: Parameters -> ()
-        on-execute: ((parameters) !-> )
+        # on-execute :: Parameters -> Boolean -> ()
+        on-execute: ((parameters, will-execute) !-> )
 
         # on-reset :: () -> ()
         on-reset: (!->)
@@ -222,8 +222,11 @@ module.exports = create-class do
 
     # execute :: () -> ()
     execute: !->
+        parameters-before = @state.parameters
         <~ @set-state parameters: @get-computed-state!.parameters
-        @props.on-execute @state.parameters
+        @props.on-execute do 
+            @state.parameters |> Obj.map (.value)
+            !(@state.parameters `is-equal-to-object` parameters-before)
 
     # reset :: () -> ()
     reset: !->
