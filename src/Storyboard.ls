@@ -33,9 +33,9 @@ module.exports = create-class do
             tether :: Boolean,
             default-value :: a, 
             ui-value-from-state :: State -> UIValue, 
-            state-from-ui-value :: UIValue -> State, 
+            state-from-ui-value :: UIValue -> State', 
             parameters-from-ui-value :: UIValue -> Parameters, where Parameters :: Map Name, Value
-            render? :: UIValue -> (UIValue -> Void) -> ReactElement
+            render? :: UIValue -> (UIValue -> ()) -> ReactElement
         }
         '''
         cache: 3600
@@ -44,8 +44,14 @@ module.exports = create-class do
         state: {} # state :: State
         url: undefined # String
         
-        # on-change :: State -> Void
+        # on-change :: State -> ()
         on-change: (state) !-> 
+
+        # on-execute :: Parameters -> ()
+        on-execute: ((parameters) !-> )
+
+        # on-reset :: () -> ()
+        on-reset: (!->)
 
     # render :: a -> ReactElement
     render: ->
@@ -135,7 +141,7 @@ module.exports = create-class do
 
                 | _ => id
 
-            # render :: UIValue -> (UIValue -> Void) -> ReactElement
+            # render :: UIValue -> (UIValue -> ()) -> ReactElement
             render = control.render ? (value, on-change) ->
                 switch type
                 | \select =>
@@ -196,7 +202,7 @@ module.exports = create-class do
                 # parameters-from-ui-value :: UIValue -> Parameters
                 parameters-from-ui-value: parameters-from-ui-value ? (ui-value) ~> "#{name}" : parser ui-value
 
-                # render :: UIValue -> (UIValue -> Void) -> ReactElement
+                # render :: UIValue -> (UIValue -> ()) -> ReactElement
                 render: render
         
         # extract (parameters :: Map String, a) from controls
@@ -216,11 +222,13 @@ module.exports = create-class do
 
     # execute :: () -> ()
     execute: !->
-        @set-state parameters: @get-computed-state!.parameters
+        <~ @set-state parameters: @get-computed-state!.parameters
+        @props.on-execute @state.parameters
 
     # reset :: () -> ()
     reset: !->
         @props.on-change {}
+        @props.on-reset!
 
     # component-will-mount :: () -> ()
     component-will-mount: !-> 

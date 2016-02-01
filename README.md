@@ -105,7 +105,7 @@ Control :: {
 
     # optional parameter, allows you to provide a custom implementation for rendering the ui-control, 
     # the default implementation uses a combination of type, placeholder & options props
-    render? :: UIValue -> (UIValue -> Void) -> ReactElement
+    render? :: UIValue -> (UIValue -> ()) -> ReactElement
 }
 ```
 
@@ -114,7 +114,9 @@ Control :: {
 |    cache                     | Boolean | Number               | pipe query cache parameter, propagated to children |
 |    controls                  | [Control]                      |  |
 |    state                     | State                          | an object that stores the state of the ui controls, this can be the state of the hosting component or the query string (for example) |
-|    on-change                 | State -> Void                  | fired whenever the value of a ui-control changes, here you MUST update the state prop, above, to complete the data flow |
+|    on-change                 | State -> ()                    | fired whenever the value of a ui-control changes, here you MUST update the state prop, above, to complete the data flow |
+|    on-execute                | Parameters -> ()               | fired whenever the user executes either by clicking on search or using (ctrl + enter / command + enter) hotkeys |
+|    on-reset                  | () -> ()                       | fired whenever the user resets the form, either by clicking or using (alt + r, option + r) hotkeys |
 |    url                       | String                         | the url of the pipe api server, propagated to the children |
 |    parameters                | object                         | default parameters object which extended by the parameters object obtained from ui controls (before being propagated to the children), also used for nesting Storyboard components |
 
