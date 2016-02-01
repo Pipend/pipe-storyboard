@@ -1,6 +1,6 @@
 {
   "name": "pipe-storyboard",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Set of components to create storyboards from pipe queries",
   "main": "src/index.js",
   "scripts": {
@@ -53,7 +53,7 @@
     "moment": "^2.11.1",
     "pipe-web-client": "latest",
     "prelude-extension": "latest",
-    "react-selectize": "^0.5.2"
+    "react-selectize": "latest"
   },
   "peerDependencies": {
     "react": "^0.14.6",
