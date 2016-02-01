@@ -36,7 +36,7 @@ App = create-class do
             to-date: default-to-date
           ui-value-from-state: ({ago, from, to}) -> {ago, from, to}
           state-from-ui-value: ({ago, from, to}) -> {ago, from, to}
-          parameters-from-ui-value: ({ago, from, to}) -> 
+          parameters-from-ui-value: ({ago, from, to}) ->
             if ago == \custom then {ago: "", from, to} else {from: null, to: null, ago}
           render: (value, on-change) ~>
             DateRange do 
