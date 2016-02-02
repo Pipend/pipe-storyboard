@@ -39,9 +39,12 @@ module.exports = create-class do
         }
         '''
         cache: 3600
+        class-name: ""
         controls: [] # [Control]
+        extras: {}
         parameters: {}
         state: {} # state :: State
+        style: {}
         url: undefined # String
         
         # on-change :: State -> ()
@@ -58,7 +61,8 @@ module.exports = create-class do
         {change, controls, parameters} = @get-computed-state!
 
         div do 
-            class-name: \storyboard
+            class-name: "storyboard #{@props.class-name}"
+            style: @props.style
 
             # FORM
             div do 
@@ -109,6 +113,7 @@ module.exports = create-class do
                         clone-element do 
                             child
                             cache: child.props?.cache ? @props.cache
+                            extras: {} <<< @props.extras <<< child.props.extras
                             parameters: @state.parameters
                             url: child.props?.url ? @props.url
 

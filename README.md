@@ -88,20 +88,21 @@ Control :: {
     # whereas a value of false implies that an ajax request will be made to the pipe api server to re-execute the query before running the transformation & presentation functions
     client-side: true
 
-    # optional parameter, specifies how to extract the value of the ui-control from a state object
-    # the state object is passed as a prop to the Storyboard component, the default implementation
-    # uses the name property of the control i.e. ui-value-from-state = (state) ~> state[name]
+    # optional parameter, specifies how to extract the value of the ui-control from the `State`
+    # the `State` object is passed as a prop to the `Storyboard` component, 
+    # default-implementation = (state) ~> state[name]
     ui-value-from-state :: State -> UIValue
 
     # optional parameter, specifies how to update the state using the new value of the ui-control
-    # the default implementation uses the name property of the control i.e state-from-ui-value = (new-ui-value) ~> "#{name}" : new-ui-value
-    state-from-ui-value :: UIValue -> State 
+    # the result of this function is folded (with the result from other controls) to obtain the full `State` object
+    # default implementation = (new-ui-value) ~> "#{name}" : new-ui-value
+    state-from-ui-value :: UIValue -> State' 
 
     # optional parameter, specifies how to convert the ui-value into a parameter for the query
-    # the default implementation uses the name property of the control i.e parameters-from-ui-value = (ui-value) ~> "#{name}" : ui-value
-    # Note: the return type is a hash which implies you can return multiple parameters from this method
+    # default implementation = (ui-value) ~> "#{name}" : ui-value
+    # the result of this function is folded (with the result from other controls) to obtain the full `Parameters` object
     # example usage: converting between local and gmt timezones
-    parameters-from-ui-value :: UIValue -> Parameters, where Parameters :: Map Name, Value
+    parameters-from-ui-value :: UIValue -> Parameters', where Parameters' :: Map Name, Value
 
     # optional parameter, allows you to provide a custom implementation for rendering the ui-control, 
     # the default implementation uses a combination of type, placeholder & options props
@@ -113,12 +114,12 @@ Control :: {
 |------------------------------|--------------------------------|--------------------------------|
 |    cache                     | Boolean | Number               | pipe query cache parameter, propagated to children |
 |    controls                  | [Control]                      |  |
+|    extras                    | object                         | combines and propagates to Children |
 |    state                     | State                          | an object that stores the state of the ui controls, this can be the state of the hosting component or the query string (for example) |
 |    on-change                 | State -> ()                    | fired whenever the value of a ui-control changes, here you MUST update the state prop, above, to complete the data flow |
 |    on-execute                | Parameters -> Boolean -> ()    | fired whenever the user executes either by clicking on search or using (ctrl + enter / command + enter) hotkeys |
 |    on-reset                  | () -> ()                       | fired whenever the user resets the form, either by clicking or using (alt + r, option + r) hotkeys |
 |    url                       | String                         | the url of the pipe api server, propagated to the children |
-|    parameters                | object                         | default parameters object which extended by the parameters object obtained from ui controls (before being propagated to the children), also used for nesting Storyboard components |
 
 * Story 
 
@@ -128,11 +129,11 @@ Control :: {
 |------------------------------|--------------------------------|--------------------------------|
 |    cache                     | Boolean | Number               | pipe query cache parameter |
 |    branch-id                 | String                         | the branch id of the pipe query, if specified the latest query for that branch will be rendered |
+|    extras                    | object                         | extras are static parameters that are merged with the dynamic `Parameters` object, they help in reuse of queries |
 |    query-id                  | String                         | the query id of the pipe query to be rendered |
 |    url                       | String                         | the url of the pipe api server, usually propagated by the Storyboard component |
 |    class-name                | String                         | custom class name for styling the component externally |
 |    style                     | object                         | custom css styles useful in combination with Layout and flexbox |
-|    parameters                | object                         | parameters to pass to the pipe query (identified by query-id or branch-id), usually propagated by the Storyboard component |
 |    title                     | String                         | title for the query, defaults to the query-title property of the pipe document |
 |    show-title                | Boolean                        | defaults to true |
 |    show-links                | Boolean                        | defaults to true (setting it to false will hide the links to edit, share, .. query/result) |
@@ -143,6 +144,6 @@ Control :: {
 |------------------------------|--------------------------------|--------------------------------|
 |    cache                     | Boolean | Number               | pipe query cache parameter, propagated to children |
 |    class-name                | String                         | custom class name for styling the component externally |
+|    extras                    | object                         | combines and propagates to Children |
 |    style                     | object                         | custom css styles |
-|    parameters                | object                         | parameters to pass to children, usually propagated by the Storyboard component |
 |    url                       | String                         | the url of the pipe api server, usually propagated by the Storyboard component |

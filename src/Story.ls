@@ -15,6 +15,7 @@ module.exports = create-class do
         branch-id: "" 
         cache: undefined # Boolean
         class-name: ""
+        extras: {}
         parameters: {} # Map ParameterName, {value :: a, client-side :: Boolean}
         query-id: ""
         show-links: true
@@ -27,7 +28,7 @@ module.exports = create-class do
     render: ->
         {branch-id, class-name, query-id, show-links, show-title, url}? = @props
         expand = !show-title and !show-links
-        parameters = @props.parameters |> Obj.map (.value)
+        parameters = @finalize @props.parameters 
         segment = if query-id then "queries/#{query-id}" else "branches/#{branch-id}"
         share-url = "#{url}/apis/#{segment}/execute/#{@props.cache}/presentation?"
 
@@ -100,24 +101,28 @@ module.exports = create-class do
         #  presentation-function :: DOMElement -> result -> Parameters -> DOM()
         <~ @set-state {document, execute, transformation-function, presentation-function, loading: true}
 
-        parameters = @props.parameters |> Obj.map (.value)
+        finalized-parameters = @finalize @props.parameters 
 
         # use parameters to execute the query and update the state with the result
-        result <~ @state.execute @props.cache, parameters .then _
+        result <~ @state.execute @props.cache, finalized-parameters .then _
         <~ @set-state {result, loading: false}
         
         # present the result
         presentation-function do 
             find-DOM-node @refs[\presentation-container]
-            transformation-function result, parameters
-            parameters
+            transformation-function result, finalized-parameters
+            finalized-parameters
+
+    # finalize :: Parameters -> Parameters'
+    finalize: (parameters) -> 
+        {} <<< (parameters |> Obj.map (.value)) <<< @props.extras
 
     # component-did-mount :: () -> Void
     component-did-mount: !->
         if !!@refs.parameters
             new clipboard find-DOM-node @refs.parameters
 
-    
+    # component-will-receive-props :: Props -> Void    
     component-will-receive-props: (next-props) !->
         
         {execute, transformation-function, presentation-function}? = @state
@@ -131,8 +136,8 @@ module.exports = create-class do
                 
             if change.length > 0
                 client-side = change |> all -> !!it.1?.client-side
-                parameters = next-props.parameters |> Obj.map (.value)
                 view = find-DOM-node @refs[\presentation-container]
+                finalized-parameters = @finalize next-props.parameters
 
                 if client-side
 
@@ -140,15 +145,15 @@ module.exports = create-class do
                     # no need to execute the query on the server
                     presentation-function do 
                         view
-                        transformation-function @state.result, parameters
-                        parameters
+                        transformation-function @state.result, finalized-parameters
+                        finalized-parameters
 
                 else
                     # show preloader
                     <~ @set-state loading: true
 
                     # execute the query on the server
-                    result <~ execute @props.cache, parameters .then _
+                    result <~ execute @props.cache, finalized-parameters .then _
 
                     # hide the preloader
                     <~ @set-state {result, loading: false}
@@ -156,6 +161,6 @@ module.exports = create-class do
                     # transform and present the result
                     presentation-function do 
                         view
-                        transformation-function result, parameters
-                        parameters
+                        transformation-function result, finalized-parameters
+                        finalized-parameters
 

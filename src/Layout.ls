@@ -1,3 +1,4 @@
+{id} = require \prelude-ls
 {Children, DOM:{div}, clone-element, create-class} = require \react
 
 module.exports = create-class do 
@@ -8,6 +9,7 @@ module.exports = create-class do
     get-default-props: ->
         cache: undefined # Boolean
         class-name: ""
+        extras: {}
         parameters: {}
         style: {}
         url: undefined # String
@@ -27,6 +29,7 @@ module.exports = create-class do
                     clone-element do 
                         child
                         cache: child.props?.cache ? @props.cache
+                        extras: {} <<< @props.extras <<< child.props.extras
                         parameters: @props.parameters
                         url: child.props?.url ? @props.url
 

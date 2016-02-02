@@ -25,9 +25,9 @@ App = create-class do
 
     default-to-date = moment!.format \YYYY-MM-DDTHH:mm
     to-date = @props.location.query?.to ? default-to-date
-
+    
     Storyboard do 
-      url: \http://ndemo.pipend.com
+      url: \http://rf.pipend.com
       controls: 
         * name: \Range
           default-value: 
@@ -71,14 +71,54 @@ App = create-class do
       on-change: (new-state) ~> 
         hash-history.replace (update-querystring window.location.href, new-state)
 
-      Story branch-id: \pAXM8wu
+      Layout do 
+        style:
+          display: \flex
+          flex-direction: \column
+
+        # SEARCH
+        Story do 
+          style:
+            height: \70%
+          branch-id: \pBoHVpe
+
+        # TREND
+        Layout do 
+          extras:
+            bucket-size: 86400000
+            limit: 10
+            show-legend: true
+          style: 
+            display: \flex
+            flex-direction: \column
+
+          # PER CHANNEL
+          Story do 
+            extras:
+              fieldname: \channelName
+            title: "Channel popularity (in terms of # of messages) over time"
+            style:
+              border-right: '1px solid #ccc'
+              flex: 1
+              height: 500
+            branch-id: \prKRkKP
+          
+          # PER USER
+          Story do 
+            extras:
+              fieldname: \username
+            title: "Top contributers (in terms of # of messages) over time"
+            style:
+              flex: 1
+              height: 500
+            branch-id: \prKRkKP
 
   get-initial-state: ->
     channels: []
 
   # component-will-mount :: () -> ()
   component-will-mount: !->
-    fetch "http://ndemo.pipend.com/apis/branches/pB4lPee/execute/86400/transformation"
+    fetch "http://rf.pipend.com/apis/branches/pBtfJqR/execute/86400/transformation"
       .then (.json!)
       .then ~> @set-state channels: it
 
