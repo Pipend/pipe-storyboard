@@ -30,7 +30,7 @@ module.exports = create-class do
               label: @props.ago
               value: @props.ago
             options: ['1 day', '1 week', '1 month', '3 months', 'custom'] |> map ~> label: it, value: it
-            on-value-change: ({value}, callback) ~>
+            on-value-change: ({value}?, callback) ~>
               @props.on-change ago: value
               callback!
 

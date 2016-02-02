@@ -167,12 +167,15 @@ module.exports = create-class do
                                 |> filter -> !!it
                                 |> map -> label: it, value: it
                         options: options |> map ~> label: it, value: it
-                        on-value-change: ({value}) ~> on-change value
+                        on-value-change: ({value}?) ~> on-change value
                         on-values-change: (values) ~> 
-                            on-change do 
-                                values 
-                                |> map (.value) 
-                                |> Str.join \,
+                            on-change do
+                                if !!values
+                                    values 
+                                    |> map (.value) 
+                                    |> Str.join \,
+                                else
+                                    undefined
 
                 | _ =>
                     input {
