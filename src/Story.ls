@@ -126,20 +126,28 @@ module.exports = create-class do
         #  execute :: Parameters -> p result
         #  tranformation-function :: result -> Parameters -> result
         #  presentation-function :: DOMElement -> result -> Parameters -> DOM()
-        <~ @set-state {document, execute, transformation-function, presentation-function, loading: true}
-        
-        finalized-parameters = @finalize @props.parameters 
+        <~ @set-state {document, execute, transformation-function, presentation-function}
+        @refresh @props.cache
+    
+    # public method to re-execute the query
+    # refresh :: Boolean -> ()
+    refresh: (cache) ->
+        <~ @set-state loading: true
 
+        finalized-parameters = @finalize @props.parameters 
+ 
         # use parameters to execute the query and update the state with the result
-        result <~ @state.execute @props.cache, finalized-parameters .then _
+        result <~ @state.execute cache, finalized-parameters .then _
         <~ @set-state {result, loading: false}
         
+        {transformation-function, presentation-function} = @state
+
         # present the result
         presentation-function do 
             find-DOM-node @refs[\presentation-container]
             transformation-function result, finalized-parameters
             finalized-parameters
-    
+
     # Parameters :: {name: {value :: a, client-side :: Boolean}, ...}
     # Parameters' :: {name: value :: a, ...}
     # finalize :: Parameters -> Parameters'

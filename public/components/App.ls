@@ -28,6 +28,7 @@ App = create-class do
     
     Storyboard do 
       url: \http://rf.pipend.com
+      cache: true
       controls: 
         * name: \Range
           default-value: 
@@ -81,10 +82,17 @@ App = create-class do
           style:
             height: \70%
           branch-id: \pBoHVpe
-          render-links: ({branch-id, query-id, url}) ~>
+          ref: \search
+          render-links: ({branch-id, query-id, url, cache}) ~>
             segment = if branch-id then "branches/#{branch-id}" else "query/#{query-id}"
             div class-name: \links,
-              a href: "#{url}/#{segment}", 'View Query'
+              a do 
+                on-click: (e) ~>
+                  @refs.search.refresh false
+                  e.prevent-default!
+                  e.stop-propagation!
+                  false
+                'Refresh'
 
         # TREND
         Layout do 
