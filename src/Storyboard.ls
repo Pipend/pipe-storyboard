@@ -114,11 +114,14 @@ module.exports = create-class do
                             child
                             cache: child.props?.cache ? @props.cache
                             extras: {} <<< @props.extras <<< child.props.extras
-                            parameters: @state.parameters
+                            parameters: {} <<< @state.parameters <<<
+                                refresh-count: value: @state.refresh-count
                             url: child.props?.url ? @props.url
 
     # get-initial-state :: () -> UIState
-    get-initial-state: -> parameters: {}
+    get-initial-state: -> 
+        parameters: {}
+        refresh-count: 0
 
     # get-computed-state :: () -> ComputedState :: {controls :: [Control], parameters :: Parameters}
     get-computed-state: ->
@@ -230,11 +233,22 @@ module.exports = create-class do
 
     # execute :: () -> ()
     execute: !->
-        parameters-before = @state.parameters
-        <~ @set-state parameters: @get-computed-state!.parameters
+        <~ do ~> (callback) ~>
+            current-parameters = @get-computed-state!.parameters
+            
+            # fake a change to rexecute the query
+            if @state.parameters `is-equal-to-object` current-parameters
+                @set-state do 
+                    refresh-count: @state.refresh-count + 1
+                    callback
+
+            else
+                @set-state do 
+                    parameters: current-parameters
+                    callback
+
         @props.on-execute do 
             @state.parameters |> Obj.map (.value)
-            !(@state.parameters `is-equal-to-object` parameters-before)
 
     # reset :: () -> ()
     reset: !->
