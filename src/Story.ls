@@ -6,7 +6,7 @@ require! \querystring
 {DOM:{a, div}, create-class, create-factory} = require \react
 {find-DOM-node} = require \react-dom
 
-DefaultOptionsList = create-factory create-class do 
+DefaultLinks = create-factory create-class do 
 
     # get-default-props :: () -> Props
     get-default-props: ->
@@ -23,7 +23,7 @@ DefaultOptionsList = create-factory create-class do
         share-url = "#{url}/apis/#{segment}/execute/#{@props.cache}/presentation?"
 
         div do 
-            class-name: \buttons
+            class-name: \links
 
             a do 
                 href: "#{url}/#{segment}"
@@ -64,8 +64,8 @@ module.exports = create-class do
         parameters: {} # Map ParameterName, {value :: a, client-side :: Boolean}
         query-id: ""
 
-        # render-buttons :: -> ReactElement
-        render-buttons: DefaultOptionsList
+        # render-links :: -> ReactElement
+        render-links: DefaultLinks
 
         show-links: true
         show-title: true
@@ -94,9 +94,9 @@ module.exports = create-class do
                             class-name: \title
                             @props.title ? @state.document.query-title
 
-                    # BUTTONS
+                    # LINKS
                     if @props.show-links
-                        @props.render-buttons {branch-id, cache, query-id, url, parameters}
+                        @props.render-links {branch-id, cache, query-id, url, parameters}
 
             # PRESENTATION
             div do 
@@ -187,4 +187,3 @@ module.exports = create-class do
                         view
                         transformation-function result, finalized-parameters
                         finalized-parameters
-

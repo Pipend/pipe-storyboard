@@ -81,9 +81,9 @@ App = create-class do
           style:
             height: \70%
           branch-id: \pBoHVpe
-          render-buttons: ({branch-id, query-id, url}) ~>
+          render-links: ({branch-id, query-id, url}) ~>
             segment = if branch-id then "branches/#{branch-id}" else "query/#{query-id}"
-            div class-name: \buttons,
+            div class-name: \links,
               a href: "#{url}/#{segment}", 'View Query'
 
         # TREND

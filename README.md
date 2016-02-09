@@ -135,6 +135,7 @@ Control :: {
 |    class-name                | String                         | custom class name for styling the component externally |
 |    style                     | object                         | custom css styles useful in combination with Layout and flexbox |
 |    title                     | String                         | title for the query, defaults to the query-title property of the pipe document |
+|    render-links              | object -> ReactElement         | a function that receives {query-id, branch-id, url, cache, parameters} and must return a ReactElement that renders the links on top-right corner of the query |
 |    show-title                | Boolean                        | defaults to true |
 |    show-links                | Boolean                        | defaults to true (setting it to false will hide the links to edit, share, .. query/result) |
 
