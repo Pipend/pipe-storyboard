@@ -1,6 +1,6 @@
 require! \moment
 {map} = require \prelude-ls
-{{div}:DOM, create-class, create-factory} = require \react
+{{a, div}:DOM, create-class, create-factory} = require \react
 {render} = require \react-dom
 require! \react-router
 {hash-history} = react-router
@@ -81,6 +81,10 @@ App = create-class do
           style:
             height: \70%
           branch-id: \pBoHVpe
+          render-buttons: ({branch-id, query-id, url}) ~>
+            segment = if branch-id then "branches/#{branch-id}" else "query/#{query-id}"
+            div class-name: \buttons,
+              a href: "#{url}/#{segment}", 'View Query'
 
         # TREND
         Layout do 

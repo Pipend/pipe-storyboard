@@ -6,6 +6,51 @@ require! \querystring
 {DOM:{a, div}, create-class, create-factory} = require \react
 {find-DOM-node} = require \react-dom
 
+DefaultOptionsList = create-factory create-class do 
+
+    # get-default-props :: () -> Props
+    get-default-props: ->
+        # query-id :: String
+        # branch-id :: String
+        url: ""
+        cache: false
+        parameters: {}
+
+    # render :: () -> ReactElement
+    render: ->
+        {query-id, branch-id, parameters, url, cache}? = @props
+        segment = if query-id then "queries/#{query-id}" else "branches/#{branch-id}"
+        share-url = "#{url}/apis/#{segment}/execute/#{@props.cache}/presentation?"
+
+        div do 
+            class-name: \buttons
+
+            a do 
+                href: "#{url}/#{segment}"
+                target: \_blank
+                \Edit
+
+            a do
+                href: "#{share-url}#{decode-URI-component querystring.stringify parameters}"
+                target: \_blank
+                \Share
+
+            a do 
+                ref: \parameters
+                \data-clipboard-text : (JSON.stringify parameters, null, 4)
+                \Parameters
+                
+            a do 
+                href: "#{url}/ops"
+                target: \_blank
+                'Task Manager'
+
+    # component-did-mount :: () -> Void
+    component-did-mount: !->
+        if !!@refs.parameters
+            new clipboard find-DOM-node @refs.parameters
+
+
 module.exports = create-class do 
 
     display-name: \Story
@@ -18,6 +63,10 @@ module.exports = create-class do
         extras: {}
         parameters: {} # Map ParameterName, {value :: a, client-side :: Boolean}
         query-id: ""
+
+        # render-buttons :: -> ReactElement
+        render-buttons: DefaultOptionsList
+
         show-links: true
         show-title: true
         style: {}
@@ -26,11 +75,10 @@ module.exports = create-class do
 
     # render :: a -> ReactElement
     render: ->
-        {branch-id, class-name, query-id, show-links, show-title, url}? = @props
+        {branch-id, cache, class-name, query-id, show-links, show-title, url}? = @props
         expand = !show-title and !show-links
         parameters = @finalize @props.parameters 
-        segment = if query-id then "queries/#{query-id}" else "branches/#{branch-id}"
-        share-url = "#{url}/apis/#{segment}/execute/#{@props.cache}/presentation?"
+        
 
         div do 
             class-name: "story #{class-name} #{if @state.loading then 'loading' else ''} #{if expand then 'expand' else ''}"
@@ -48,28 +96,7 @@ module.exports = create-class do
 
                     # BUTTONS
                     if @props.show-links
-                        div do 
-                            class-name: \buttons
-
-                            a do 
-                                href: "#{url}/#{segment}"
-                                target: \_blank
-                                \Edit
-
-                            a do
-                                href: "#{share-url}#{decode-URI-component querystring.stringify parameters}"
-                                target: \_blank
-                                \Share
-
-                            a do 
-                                ref: \parameters
-                                \data-clipboard-text : (JSON.stringify parameters, null, 4)
-                                \Parameters
-                                
-                            a do 
-                                href: "#{url}/ops"
-                                target: \_blank
-                                'Task Manager'
+                        @props.render-buttons {branch-id, cache, query-id, url, parameters}
 
             # PRESENTATION
             div do 
@@ -112,15 +139,12 @@ module.exports = create-class do
             find-DOM-node @refs[\presentation-container]
             transformation-function result, finalized-parameters
             finalized-parameters
-        
+    
+    # Parameters :: {name: {value :: a, client-side :: Boolean}, ...}
+    # Parameters' :: {name: value :: a, ...}
     # finalize :: Parameters -> Parameters'
     finalize: (parameters) -> 
         {} <<< (parameters |> Obj.map (.value)) <<< @props.extras
-
-    # component-did-mount :: () -> Void
-    component-did-mount: !->
-        if !!@refs.parameters
-            new clipboard find-DOM-node @refs.parameters
 
     # component-will-receive-props :: Props -> Void    
     component-will-receive-props: (next-props) !->
