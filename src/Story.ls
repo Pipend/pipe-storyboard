@@ -1,7 +1,7 @@
 require! \clipboard
 {is-equal-to-object} = require \prelude-extension
 require! \pipe-web-client
-{all, filter, id, map, Obj, obj-to-pairs, pairs-to-obj} = require \prelude-ls
+{all, filter, id, map, Obj, obj-to-pairs, pairs-to-obj, reject} = require \prelude-ls
 require! \querystring
 {DOM:{a, div}, create-class, create-factory} = require \react
 {find-DOM-node} = require \react-dom
@@ -100,7 +100,7 @@ module.exports = create-class do
         #  tranformation-function :: result -> Parameters -> result
         #  presentation-function :: DOMElement -> result -> Parameters -> DOM()
         <~ @set-state {document, execute, transformation-function, presentation-function, loading: true}
-
+        
         finalized-parameters = @finalize @props.parameters 
 
         # use parameters to execute the query and update the state with the result
@@ -112,7 +112,7 @@ module.exports = create-class do
             find-DOM-node @refs[\presentation-container]
             transformation-function result, finalized-parameters
             finalized-parameters
-
+        
     # finalize :: Parameters -> Parameters'
     finalize: (parameters) -> 
         {} <<< (parameters |> Obj.map (.value)) <<< @props.extras
@@ -132,7 +132,7 @@ module.exports = create-class do
             # change :: [[name, {value, client-side}]]
             change = next-props.parameters
                 |> obj-to-pairs
-                |> filter ~> !(it.1?.value `is-equal-to-object` @props.parameters?[it.0]?.value)
+                |> reject ~> it.1?.value `is-equal-to-object` @props.parameters?[it.0]?.value
                 
             if change.length > 0
                 client-side = change |> all -> !!it.1?.client-side
