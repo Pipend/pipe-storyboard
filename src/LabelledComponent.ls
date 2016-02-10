@@ -6,7 +6,6 @@ module.exports = create-class do
   get-default-props: ->
     class-name: ""
     label: ""
-    # render :: () -> ReactElement
     show-label: true
     style: {}
 
@@ -21,5 +20,5 @@ module.exports = create-class do
         label null, @props.label
 
       # CUSTOM COMPONENT
-      @props.render!
+      @props.children
         

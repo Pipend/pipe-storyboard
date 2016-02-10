@@ -22,7 +22,7 @@ module.exports = create-class do
 
     # get-default-props :: a -> Props
     get-default-props: ->
-        '''
+        /*
         Control :: {
             name :: String, 
             type :: String, 
@@ -37,7 +37,7 @@ module.exports = create-class do
             parameters-from-ui-value :: UIValue -> Parameters, where Parameters :: Map Name, Value
             render? :: UIValue -> (UIValue -> ()) -> ReactElement
         }
-        '''
+        */
         cache: 3600
         class-name: ""
         controls: [] # [Control]
@@ -76,13 +76,12 @@ module.exports = create-class do
                         key: name
                         label: label
                         show-label: !!label
-                        render: ~>
 
-                            # CUSTOM INPUT CONTROL
-                            render do 
-                                (ui-value-from-state @props.state) ? default-value
-                                (new-ui-value) ~>
-                                    @props.on-change {} <<< @props.state <<< (state-from-ui-value new-ui-value)
+                        # CUSTOM INPUT CONTROL
+                        render do 
+                            (ui-value-from-state @props.state) ? default-value
+                            (new-ui-value) ~>
+                                @props.on-change {} <<< @props.state <<< (state-from-ui-value new-ui-value)
 
                 # BUTTONS
                 div do
@@ -261,6 +260,7 @@ module.exports = create-class do
         @unbind-execute-hotkeys = on-hotkeys ['command + enter', 'ctrl + enter'], ~> @execute!
         @unbind-reset-hotkeys = on-hotkeys ['alt + r', 'option + r'], ~> @reset!
 
+    # component-will-unmount :: () -> ()
     component-will-unmount: !->
         @unbind-execute-hotkeys!
         @unbind-reset-hotkeys!

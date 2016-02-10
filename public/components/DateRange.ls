@@ -24,15 +24,13 @@ module.exports = create-class do
       # AGO      
       LabelledComponent do 
         label: \Ago
-        render: ~>
-          SimpleSelect do 
-            value: 
-              label: @props.ago
-              value: @props.ago
-            options: ['1 day', '1 week', '1 month', '3 months', 'custom'] |> map ~> label: it, value: it
-            on-value-change: ({value}?, callback) ~>
-              @props.on-change ago: value
-              callback!
+        SimpleSelect do 
+          value: 
+            label: @props.ago
+            value: @props.ago
+          options: ['1 day', '1 week', '1 month', '3 months', 'custom'] |> map ~> label: it, value: it
+          on-value-change: ({value}?) ~>
+            @props.on-change ago: value
 
       if @props.ago == \custom
 
@@ -44,9 +42,8 @@ module.exports = create-class do
               key: p
               class-name: p
               label: p
-              render: ~> 
-                input do 
-                  type: \datetime-local
-                  value: @props[p]
-                  on-change: ({target:{value}}) ~>
-                    @props.on-change "#{p}" : value
+              input do 
+                type: \datetime-local
+                value: @props[p]
+                on-change: ({target:{value}}) ~>
+                  @props.on-change "#{p}" : value
