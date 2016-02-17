@@ -76,6 +76,7 @@ App = create-class do
         style:
           display: \flex
           flex-direction: \column
+          height: '100%'
 
         # SEARCH
         Story do 
@@ -102,7 +103,6 @@ App = create-class do
             show-legend: true
           style: 
             display: \flex
-            flex-direction: \column
 
           # PER CHANNEL
           Story do 
@@ -112,6 +112,7 @@ App = create-class do
             style:
               border-right: '1px solid #ccc'
               flex: 1
+              width: \50%
               height: 500
             branch-id: \prKRkKP
           
@@ -122,6 +123,7 @@ App = create-class do
             title: "Top contributers (in terms of # of messages) over time"
             style:
               flex: 1
+              width: \50%
               height: 500
             branch-id: \prKRkKP
 
