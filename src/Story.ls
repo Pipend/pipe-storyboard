@@ -1,6 +1,7 @@
 require! \clipboard
 {is-equal-to-object} = require \prelude-extension
 require! \pipe-web-client
+prefixer = new (require \inline-style-prefixer)!
 {all, filter, id, map, Obj, obj-to-pairs, pairs-to-obj, reject} = require \prelude-ls
 require! \querystring
 {DOM:{a, div}, create-class, create-factory} = require \react
@@ -62,6 +63,7 @@ module.exports = create-class do
         class-name: ""
         extras: {}
         parameters: {} # Map ParameterName, {value :: a, client-side :: Boolean}
+        prefix-styles: true
         query-id: ""
 
         # render-links :: -> ReactElement
@@ -82,7 +84,7 @@ module.exports = create-class do
 
         div do 
             class-name: "story #{class-name} #{if @state.loading then 'loading' else ''} #{if expand then 'expand' else ''}"
-            style: @props.style
+            style: (if @props.prefix-styles then prefixer.prefix @props.style else @props.style)
 
             if !expand
                 div do 

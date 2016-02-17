@@ -1,3 +1,4 @@
+prefixer = new (require \inline-style-prefixer)!
 {id} = require \prelude-ls
 {Children, DOM:{div}, clone-element, create-class} = require \react
 
@@ -11,6 +12,7 @@ module.exports = create-class do
         class-name: ""
         extras: {}
         parameters: {}
+        prefix-styles: true
         style: {}
         url: undefined # String
 
@@ -18,7 +20,7 @@ module.exports = create-class do
     render: ->
         div do
             class-name: "layout #{@props.class-name}"
-            style: {} <<< @props.style <<< {display: \flex}
+            style: (if @props.prefix-styles then prefixer.prefix @props.style else @props.style)
 
             # CHILDREN
             Children.map do 
