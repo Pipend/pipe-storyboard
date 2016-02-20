@@ -193,7 +193,7 @@ module.exports = create-class do
 
                             on-change f current-target
 
-                    } <<< (if type == \checkbox then {checked: value} else {value})
+                    } <<< (if type == \checkbox then {checked: value == \true} else {value})
 
             {ui-value-from-state, state-from-ui-value, parameters-from-ui-value}? = control
 

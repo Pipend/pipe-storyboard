@@ -49,6 +49,11 @@ App = create-class do
           type: \text
           default-value: ""
 
+        * name: \test
+          label: \test
+          type: \checkbox
+          default-value: false
+
         * name: \username
           label: \username
           type: \text
